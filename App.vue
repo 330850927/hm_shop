@@ -13,5 +13,10 @@
 </script>
 
 <style>
+	/* 引入图标样式 */
+	@import url("./static/font/iconfont.css");
 	/*每个页面公共css */
+	
+	
+	
 </style>

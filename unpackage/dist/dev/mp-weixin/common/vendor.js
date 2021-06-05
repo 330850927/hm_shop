@@ -8088,6 +8088,45 @@ function normalizeComponent (
 }
 
 
+/***/ }),
+/* 11 */
+/*!************************************************!*\
+  !*** D:/myProject/vueDemo/hm_shop/util/api.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.myRequest = void 0;var BASE_URL = 'http://localhost:8082';
+var myRequest = function myRequest(options) {
+  return new Promise(function (resolve, reject) {
+    uni.request({
+      url: BASE_URL + options.url,
+      method: options.method || 'GET',
+      data: options.data || {},
+      success: function success(res) {
+        if (res.data.status !== 0) {
+          return uni.showToast({
+            'title': '获取数据失败',
+            'duration': 2000,
+            'icon': 'none' });
+
+        }
+        resolve(res);
+      },
+      fail: function fail(err) {
+        uni.showToast({
+          'title': '请求接口失败',
+          'duration': 2000,
+          'icon': 'none' });
+
+        reject(err);
+      } });
+
+  });
+};exports.myRequest = myRequest;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
 /***/ })
 ]]);
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map
