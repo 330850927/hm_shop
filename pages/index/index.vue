@@ -10,37 +10,60 @@
 		</swiper>
 		<!-- 导航区域 -->
 		<view class="nav">
-			<vie class="nav_item">
-				<view class="iconfont icon-ziyuan"></view>
-				<text>黑马超市</text>
-			</vie>
-			<vie class="nav_item">
-				<view class="iconfont icon-guanyuwomen"></view>
-				<text>联系我们</text>
-			</vie>
-			<vie class="nav_item">
-				<view class="iconfont icon-tupian"></view>
-				<text>社区图片</text>
-			</vie>
-			<vie class="nav_item">
-				<view class="iconfont icon-shipin"></view>
-				<text>学习视频</text>
-			</vie>
+			<view class="nav_item" v-for="(item, index) in navs" :key="index" @click="navItemClick(item.path)">
+				<view :class="item.icon"></view>
+				<text>{{item.title}}</text>
+			</view>
+		</view>
+		<!-- 推荐商品 -->
+		<view class="hot_goods">
+			<view class="tit">推荐商品</view>
+			<!-- 商品列表 -->
+			<goods-list @itemClick="gotoGoodsDetial" :goods-data="goodsData" />
 		</view>
 	</view>
 </template>
 
 <script>
+	// 商品列表组件
+	import goodsList from "@/components/goods_list/goods_list.vue"
 	export default {
+		components: {
+			goodsList
+		},
 		data() {
 			return {
 				swipers: [], // 轮播数据
-				current: 0, //轮播索引
-				mode: 'round' //指示点的类型，可选值：default 、round 、nav 、 indexes
+				current: 0, // 轮播索引
+				mode: 'round', // 指示点的类型，可选值：default 、round 、nav 、 indexes
+				pageNumber: 1, // 当前页码
+				goodsData: [], // 商品数据
+				navs: [{
+						icon: "iconfont icon-ziyuan",
+						title: '黑马超市',
+						path: '/pages/goods/goods'
+					},
+					{
+						icon: "iconfont icon-guanyuwomen",
+						title: '联系我们',
+						path: '/pages/contact/contact'
+					},
+					{
+						icon: "iconfont icon-tupian",
+						title: '社区图片',
+						path: '/pages/pics/pics'
+					},
+					{
+						icon: "iconfont icon-shipin",
+						title: '学习视频',
+						path: '/pages/videos/videos'
+					}
+				],
 			}
 		},
 		onLoad() {
 			this.getSwipers()
+			this.getHotGoods()
 		},
 		methods: {
 			// 获取轮播图的数据
@@ -56,6 +79,28 @@
 			// 轮播图切换
 			change(e) {
 				this.current = e.detail.current;
+			},
+			// 导航点击跳转
+			navItemClick(url) {
+				console.log('跳转', url)
+				uni.navigateTo({
+					url
+				})
+			},
+			// 获取热门商品列表
+			getHotGoods() {
+				this.$myRequest({
+					url: '/api/getgoods?pageindex=' + this.pageNumber
+				}).then((res) => {
+					console.log('获取商品列表', res)
+					this.goodsData = res.data.message
+				})
+			},
+			// 导航到商品详情
+			gotoGoodsDetial(id) {
+				uni.navigateTo({
+					url: '/pages/goods-detial/goods-detial?id=' + id
+				})
 			}
 		}
 	}
@@ -79,25 +124,48 @@
 			.nav_item {
 				width: 25%;
 				text-align: center;
-				view{
-					width:120rpx;
-					height:120rpx;
-					background-color: #b50e03;
+
+				view {
+					width: 120rpx;
+					height: 120rpx;
+					background-color: $main-color;
 					border-radius: 50%;
 					margin: 10px auto;
 					line-height: 120rpx;
-					color:#fff;
+					color: #fff;
 					font-size: 50rpx;
 				}
-				.icon-tupian{
+
+				.icon-tupian {
 					font-size: 44rpx;
 				}
-				.icon-shipin{
+
+				.icon-shipin {
 					font-size: 54rpx;
 				}
+
 				text {
 					font-size: 30rpx;
+					color: #3F536E
 				}
+			}
+		}
+
+		.hot_goods {
+			background: #eee;
+			overflow: hidden;
+			margin: 10px 0;
+
+			.tit {
+				height: 50px;
+				line-height: 50px;
+				color: $main-color;
+				text-align: center;
+				letter-spacing: 20px;
+				background-color: #fff;
+				margin: 8rpx 0;
+				font-size: 30rpx;
+				font-weight: bold;
 			}
 		}
 	}
